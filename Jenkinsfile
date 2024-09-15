@@ -91,7 +91,7 @@ pipeline {
                         dir('robot-test') {
                             script {
                                 sh '''
-                                . "/home/thanadon-k/workspace/Build Docker Images/robot-test/venv/bin/activate"
+                                . "/home/thanadon-k/workspace/Test-Deploy/robot-test/venv/bin/activate"
                                 robot test-api.robot
                                 '''
                                 sh "docker ps -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker stop"
