@@ -33,16 +33,6 @@ pipeline {
                     steps {
                         dir('nodejs-api') {
                             script {
-                                sh "npm install --save-dev jest supertest"
-                            }
-                        }
-                    }
-                }
-
-                stage("Install Dependencies") {
-                    steps {
-                        dir('nodejs-api') {
-                            script {
                                 def jestInstalled = sh(script: "npm list jest --depth=0", returnStatus: true) == 0
                                 def supertestInstalled = sh(script: "npm list supertest --depth=0", returnStatus: true) == 0
 
