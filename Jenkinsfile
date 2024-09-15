@@ -140,7 +140,6 @@ pipeline {
                 stage("Run Docker Container") {
                     steps {
                         script {
-                            sh "docker ps -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker stop"
                             sh "docker ps -a -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker rm"
                             sh "docker run -d --name ${DOCKER_IMAGE_NAME} -p 8080:3000 registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
                         }
