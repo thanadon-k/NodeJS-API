@@ -39,11 +39,19 @@ pipeline {
                     }
                 }
 
-                stage("Run UnitTest") {
+                stage("Install Dependencies") {
                     steps {
                         dir('nodejs-api') {
                             script {
-                                sh "npm test"
+                                def jestInstalled = sh(script: "npm list jest --depth=0", returnStatus: true) == 0
+                                def supertestInstalled = sh(script: "npm list supertest --depth=0", returnStatus: true) == 0
+
+                                if (!jestInstalled || !supertestInstalled) {
+                                    echo "Installing jest and supertest"
+                                    sh "npm install --save-dev jest supertest"
+                                } else {
+                                    echo "jest and supertest already installed, skipping installation"
+                                }
                             }
                         }
                     }
