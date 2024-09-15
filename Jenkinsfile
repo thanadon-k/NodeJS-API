@@ -101,9 +101,13 @@ pipeline {
                 stage('Push Docker Image') {
                     steps {
                         script {
-                            sh "docker login -u ${GIT_USERNAME} -p ${GIT_PASSWORD} registry.gitlab.com"
-                            sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
-                            sh "docker push registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
+                            withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", 
+                                                            usernameVariable: "GIT_USERNAME", 
+                                                            passwordVariable: "GIT_PASSWORD")]) {
+                                sh "docker login -u ${GIT_USERNAME} -p ${GIT_PASSWORD} registry.gitlab.com"
+                                sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
+                                sh "docker push registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
+                            }
                         }
                     }
                 }
