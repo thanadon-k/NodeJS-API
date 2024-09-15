@@ -60,7 +60,7 @@ pipeline {
                 stage("Run Docker Container") {
                     steps {
                         script {
-                            sh "docker ps -a -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker rm"
+                            sh "docker ps -a -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker rm -f"
                             sh "docker run -d --name ${DOCKER_IMAGE_NAME} -p 8080:3000 ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
                         }
                     }
@@ -140,7 +140,7 @@ pipeline {
                 stage("Run Docker Container") {
                     steps {
                         script {
-                            sh "docker ps -a -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker rm"
+                            sh "docker ps -a -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker rm -f"
                             sh "docker run -d --name ${DOCKER_IMAGE_NAME} -p 8080:3000 registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
                         }
                     }
