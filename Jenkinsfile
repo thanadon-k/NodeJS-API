@@ -114,7 +114,7 @@ pipeline {
             }
         }
 
-        stage('Agent 2') {
+        stage('Agent Pre-Prod Server') {
             agent { label 'pre-prod-server' }
             
             environment {
