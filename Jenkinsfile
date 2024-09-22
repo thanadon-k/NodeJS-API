@@ -17,12 +17,12 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", 
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
-                                dir('nodejs-api') {
-                                    if (fileExists('.git')) {
+                                if (fileExists('.git')) {
+                                    dir('nodejs-api') {
                                         sh "git pull origin main"
-                                    } else {
-                                        sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/nodejs-api.git ."
                                     }
+                                } else {
+                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/nodejs-api.git ."
                                 }
                             }
                         }
@@ -72,12 +72,12 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", 
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
-                                dir('robot-test') {
-                                    if (fileExists('.git')) {
+                                if (fileExists('.git')) {
+                                    dir('robot-test') {
                                         sh "git pull origin main"
-                                    } else {
-                                        sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/robot-test.git ."
                                     }
+                                } else {
+                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/robot-test.git ."
                                 }
                             }
                         }
