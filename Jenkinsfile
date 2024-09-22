@@ -114,11 +114,11 @@ pipeline {
             }
         }
 
-        stage('Agent 2') {
+        stage('Agent Pre-Prod Server') {
             agent { label 'pre-prod-server' }
             
             environment {
-                DOCKER_IMAGE_NAME = "node-api"
+                DOCKER_IMAGE_NAME = "nodejs-api"
                 DOCKER_IMAGE_TAG = "latest"
                 GIT_CREDENTIALS = "gitlab-thanadon-k" 
             }
