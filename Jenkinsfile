@@ -17,7 +17,7 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", 
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
-                                if (fileExists('.git')) {
+                                if (fileExists('nodejs-api')) {
                                     dir('nodejs-api') {
                                         sh "git pull origin main"
                                     }
@@ -72,7 +72,7 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", 
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
-                                if (fileExists('.git')) {
+                                if (fileExists('robot-test')) {
                                     dir('robot-test') {
                                         sh "git pull origin main"
                                     }
