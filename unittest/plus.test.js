@@ -7,7 +7,7 @@ describe('API Tests', () => {
         expect(response.status).toBe(200);
         expect(response.body.num1).toBe(5);
         expect(response.body.num2).toBe(6);
-        expect(response.body.plus).toBe(11);
+        expect(response.body.sum).toBe(11);
     });
 
     it('should return an error if the expression of two numbers is not valid', async () => {

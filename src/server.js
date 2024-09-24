@@ -25,7 +25,7 @@ app.get('/plus/:num1/:num2', (req, res) => {
     res.json({ 
         num1: number1, 
         num2: number2, 
-        plus: number1 + number2 
+        sum: number1 + number2 
     });
 });
 
