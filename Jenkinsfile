@@ -1,14 +1,18 @@
 pipeline {
     agent none
+
+    environment {
+        DOCKER_IMAGE_NAME = "nodejs-api"
+        DOCKER_IMAGE_TAG = "latest"
+        GIT_CREDENTIALS = "gitlab-thanadon-k" 
+        GIT_PROJECT = 'sdp-g3'
+        GIT_REPO_NODEJS = 'nodejs-api'
+        GIT_REPO_ROBOT_TEST = 'robot-test'
+    }
+
     stages {
         stage('Agent Test Server') {
             agent { label 'test-server' }
-    
-            environment {
-                DOCKER_IMAGE_NAME = "nodejs-api"
-                DOCKER_IMAGE_TAG = "latest"
-                GIT_CREDENTIALS = "gitlab-thanadon-k" 
-            }
             
             stages {
                 stage("Clone Repository From NodeJS-API") {
@@ -17,12 +21,12 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", 
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
-                                if (fileExists('nodejs-api')) {
-                                    dir('nodejs-api') {
+                                if (fileExists("${GIT_REPO_NODEJS}")) {
+                                    dir("${GITLAB_REPO_NODEJS}") {
                                         sh "git pull origin main"
                                     }
                                 } else {
-                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/nodejs-api.git"
+                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/${GIT_PROJECT}/${GIT_REPO_NODEJS}.git"
                                 }
                             }
                         }
@@ -31,7 +35,7 @@ pipeline {
 
                 stage("Install Dependencies") {
                     steps {
-                        dir('nodejs-api') {
+                        dir("${GIT_REPO_NODEJS}") {
                             script {
                                 def jestInstalled = sh(script: "npm list jest --depth=0", returnStatus: true) == 0
                                 def supertestInstalled = sh(script: "npm list supertest --depth=0", returnStatus: true) == 0
@@ -49,7 +53,7 @@ pipeline {
 
                 stage("Run Unittest") {
                     steps {
-                        dir('nodejs-api') {
+                        dir("${GIT_REPO_NODEJS}") {
                             script {
                                 sh "npm test -- --detectOpenHandles"
                             }
@@ -60,7 +64,7 @@ pipeline {
                 stage("Build Docker Image") {
                     steps {
                         script {
-                            dir('nodejs-api') {
+                            dir("${GIT_REPO_NODEJS}") {
                                 sh "docker build -t ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} ."
                             }
                         }
@@ -82,12 +86,12 @@ pipeline {
                             withCredentials([usernamePassword(credentialsId: "${GIT_CREDENTIALS}", 
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
-                                if (fileExists('robot-test')) {
-                                    dir('robot-test') {
+                                if (fileExists("${GIT_REPO_ROBOT_TEST}")) {
+                                    dir("${GIT_REPO_ROBOT_TEST}") {
                                         sh "git pull origin main"
                                     }
                                 } else {
-                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/robot-test.git"
+                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/${GIT_PROJECT}/${GIT_REPO_ROBOT_TEST}.git"
                                 }
                             }
                         }
@@ -96,12 +100,12 @@ pipeline {
 
                 stage("Run Robot-Test") {
                     steps {
-                        dir('robot-test') {
+                        dir("${GIT_REPO_ROBOT_TEST}") {
                             script {
-                                sh '''
-                                . "/home/thanadon-k/workspace/Test-Deploy/robot-test/venv/bin/activate"
+                                sh """
+                                . "/home/thanadon-k/workspace/Test-Deploy/${GIT_REPO_ROBOT_TEST}/venv/bin/activate"
                                 robot test-api.robot
-                                '''
+                                """
                                 sh "docker ps -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker stop"
                             }
                         }
@@ -115,8 +119,8 @@ pipeline {
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
                                 sh "docker login -u ${GIT_USERNAME} -p ${GIT_PASSWORD} registry.gitlab.com"
-                                sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
-                                sh "docker push registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
+                                sh "docker tag ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG} registry.gitlab.com/${GIT_PROJECT}/${GIT_REPO_NODEJS}:${DOCKER_IMAGE_TAG}"
+                                sh "docker push registry.gitlab.com/${GIT_PROJECT}/${GIT_REPO_NODEJS}:${DOCKER_IMAGE_TAG}"
                             }
                         }
                     }
@@ -127,12 +131,6 @@ pipeline {
         stage('Agent Pre-Prod Server') {
             agent { label 'pre-prod-server' }
             
-            environment {
-                DOCKER_IMAGE_NAME = "nodejs-api"
-                DOCKER_IMAGE_TAG = "latest"
-                GIT_CREDENTIALS = "gitlab-thanadon-k" 
-            }
-            
             stages {
                 stage("Pull Docker Image") {
                     steps {
@@ -141,7 +139,7 @@ pipeline {
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
                                 sh "docker login -u ${GIT_USERNAME} -p ${GIT_PASSWORD} registry.gitlab.com"
-                                sh "docker pull registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
+                                sh "docker pull registry.gitlab.com/${GIT_PROJECT}/${GIT_REPO_NODEJS}:${DOCKER_IMAGE_TAG}"
                             }
                         }
                     }
@@ -151,7 +149,7 @@ pipeline {
                     steps {
                         script {
                             sh "docker ps -a -q -f name=${DOCKER_IMAGE_NAME} | xargs -r docker rm -f"
-                            sh "docker run -d --name ${DOCKER_IMAGE_NAME} -p 8080:3000 registry.gitlab.com/sdp-g3/nodejs-api:${DOCKER_IMAGE_TAG}"
+                            sh "docker run -d --name ${DOCKER_IMAGE_NAME} -p 8080:3000 registry.gitlab.com/${GIT_PROJECT}/${GIT_REPO_NODEJS}:${DOCKER_IMAGE_TAG}"
                         }
                     }
                 }
