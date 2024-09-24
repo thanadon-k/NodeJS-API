@@ -47,6 +47,16 @@ pipeline {
                     }
                 }
 
+                stage("Run Unittest") {
+                    steps {
+                        dir('unittest') {
+                            script {
+                                sh "npm test -- --detectOpenHandles"
+                            }
+                        }
+                    }
+                }
+
                 stage("Build Docker Image") {
                     steps {
                         script {
