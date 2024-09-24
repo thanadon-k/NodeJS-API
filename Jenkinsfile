@@ -49,7 +49,7 @@ pipeline {
 
                 stage("Run Unittest") {
                     steps {
-                        dir('unittest') {
+                        dir('nodejs-api') {
                             script {
                                 sh "npm test -- --detectOpenHandles"
                             }
