@@ -11,7 +11,7 @@ app.get('/getcode', (req, res) => {
 app.get('/plus/:num1/:num2', (req, res) => {
     const { num1, num2 } = req.params;
 
-    const isValidNumber = (num) => /^\d+(\.\d+)?$/.test(num);
+    const isValidNumber = (num) => /^-?\d+(\.\d+)?$|^\d+\.$/.test(num);
 
     if (!isValidNumber(num1) || !isValidNumber(num2)) {
         return res.status(400).json({ 
