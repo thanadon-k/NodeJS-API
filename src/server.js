@@ -11,21 +11,24 @@ app.get('/getcode', (req, res) => {
 app.get('/plus/:num1/:num2', (req, res) => {
     const { num1, num2 } = req.params;
 
-    const number1 = parseFloat(num1);
-    const number2 = parseFloat(num2);
+    const isValidNumber = (num) => /^-?\d+(\.\d+)?$/.test(num);
 
-    if (isNaN(number1) || isNaN(number2)) {
+    if (!isValidNumber(num1) || !isValidNumber(num2)) {
         return res.status(400).json({ 
-            error: 'parameters are not numbers' 
+            error: 'parameters are not valid numbers' 
         });
     }
+
+    const number1 = parseFloat(num1);
+    const number2 = parseFloat(num2);
 
     res.json({ 
         num1: number1, 
         num2: number2, 
-        sum: number1 + number2 
+        plus: number1 + number2 
     });
 });
+
 
 if (require.main === module) {
     app.listen(port, () => {
