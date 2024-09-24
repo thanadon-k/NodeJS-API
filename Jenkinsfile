@@ -22,7 +22,7 @@ pipeline {
                                         sh "git pull origin main"
                                     }
                                 } else {
-                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/nodejs-api.git"
+                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/nodejs-api.git ./nodejs-api"
                                 }
                             }
                         }
@@ -77,7 +77,7 @@ pipeline {
                                         sh "git pull origin main"
                                     }
                                 } else {
-                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/robot-test.git"
+                                    sh "git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sdp-g3/robot-test.git ./robot-test"
                                 }
                             }
                         }
