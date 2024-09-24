@@ -22,7 +22,7 @@ pipeline {
                                                             usernameVariable: "GIT_USERNAME", 
                                                             passwordVariable: "GIT_PASSWORD")]) {
                                 if (fileExists("${GIT_REPO_NODEJS}")) {
-                                    dir("${GITLAB_REPO_NODEJS}") {
+                                    dir("${GIT_REPO_NODEJS}") {
                                         sh "git pull origin main"
                                     }
                                 } else {
